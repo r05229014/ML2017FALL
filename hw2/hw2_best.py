@@ -2,28 +2,30 @@ import numpy as np
 import csv
 import sys
 
-test_path = sys.argv[1]
-out_path = sys.argv[2]
+x_train_path = sys.argv[1]
+y_train_path = sys.argv[2]
+test_data_path = sys.argv[3]
+out_path = sys.argv[4]
 
 
 X = []
-with open('./data/X_train') as f:
+with open(x_train_path) as f:
     row = csv.reader(f, delimiter =",")
     next(row,None)
     for r in row:
         X.append(list(map(float,r)))
         
 X = np.array(X)
-'''
+
 y = []
-with open('./data/Y_train') as f:
+with open(y_train_path) as f:
     row = csv.reader(f, delimiter =",")
     next(row,None)
     for r in row:
         y.append(list(map(float,r)))
         
 y = np.array(y)
-'''
+
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X = sc.fit_transform(X)
@@ -53,7 +55,7 @@ from keras.models import load_model
 classfier = load_model('my_model.h5')
 
 x_test = []
-with open(test_path) as f:
+with open(test_data_path) as f:
     row = csv.reader(f, delimiter =",")
     next(row,None)
     for r in row:
