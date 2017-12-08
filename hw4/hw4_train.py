@@ -83,8 +83,7 @@ alltext = np.append(train, train_nolabel)
 new = []
 for i in alltext:
     new.append(i.split())
-word_tr = Word2Vec(new, size=128, min_count=20)
-word_tr.save('./new_word.model.bin')
+word_tr = Word2Vec.load('./size128_THISSSSSSSSSSS.model.bin')
 vocab_size = len(word_tr.wv.vocab)
 
 index_x = tokenizer_data_toidx(train)
