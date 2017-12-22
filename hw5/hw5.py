@@ -17,12 +17,12 @@ import sys
 HIDDEN_SIZE = 256
 BATCH_SIZE = 2000
 EPOCHS = 200
-LATENT_DIM = 1000
+LATENT_DIM = 256
 VALIDATION_SPLIT = 0.1
 DROPOUT_RATE = 0.1
-#filepath = './model_nn_laten=.h5'
+filepath = 'model.h5'
 outpath = sys.argv[2]
-#train_path = './data/train.csv'
+#train_path = 'train.csv'
 test_path = sys.argv[1]
 ###########################
 def plothistory(history):
@@ -39,19 +39,19 @@ def MF_model(n_users, n_items, latent_dim, drop_rate):
     user_input = Input(shape=[1])
     item_input = Input(shape=[1])
     
-    user_vec = Embedding(n_users, latent_dim, input_length=1)(user_input)
+    user_vec = Embedding(n_users+1, latent_dim, input_length=1)(user_input)
     user_vec = Flatten()(user_vec)
     user_vec = Dropout(drop_rate)(user_vec)
         
-    item_vec = Embedding(n_items, latent_dim, input_length=1)(item_input)
+    item_vec = Embedding(n_items+1, latent_dim, input_length=1)(item_input)
     item_vec = Flatten()(item_vec)
     item_vec = Dropout(drop_rate)(item_vec)
     
-    user_bias = Embedding(n_users, 1, input_length=1)(user_input)
+    user_bias = Embedding(n_users+1, 1, input_length=1)(user_input)
     user_bias = Flatten()(user_bias)
     user_bias = Dropout(drop_rate)(user_bias)
     
-    item_bias = Embedding(n_items, 1, input_length=1)(item_input)
+    item_bias = Embedding(n_items+1, 1, input_length=1)(item_input)
     item_bias = Flatten()(item_bias)
     item_bias = Dropout(drop_rate)(item_bias)
     
@@ -118,14 +118,14 @@ movie_test = test_data['MovieID'].values
 #n_items = max(movie)
 #checkpointe = ModelCheckpoint(filepath=filepath,verbose=1,monitor='val_loss',save_best_only=True)
 #earlystopping = EarlyStopping(monitor='val_loss', patience = 10, verbose=1, mode='min')
-#model = NN_model(n_users, n_items, LATENT_DIM, DROPOUT_RATE,HIDDEN_SIZE) ##########################################
+#model = MF_model(n_users, n_items, LATENT_DIM, DROPOUT_RATE) ##########################################
 #history = model.fit([user_train, movie_train], y_train, epochs=EPOCHS, batch_size=BATCH_SIZE,
 #                    validation_data=([user_val, movie_val], y_val),
 #                    verbose=1, callbacks=[checkpointe, earlystopping])
 #plothistory(history)
 
 
-model = load_model('./model_mf_laten=256.h5')
+model = load_model(filepath)
 y_test = model.predict([user_test, movie_test], verbose=1)
 
 f = open(outpath, 'w')
